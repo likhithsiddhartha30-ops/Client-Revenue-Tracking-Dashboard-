@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revenue · WorthyOps Revenue Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
+
+        <section class="grid kpi-grid" id="kpis"></section>
+
+        <section class="card">
+          <div class="card-head">
+            <div><h3>Revenue Growth</h3><p>Monthly revenue with cumulative total</p></div>
+            <div class="legend"><span><i style="background:#2f6bff"></i>Monthly revenue</span><span><i class="line" style="background:#a5c8ff"></i>Cumulative</span></div>
+          </div>
+          <div class="chart h-340"><canvas id="revChart"></canvas></div>
+        </section>
+
+        <section class="grid g-1-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Revenue by Client</h3><p>Share of total in this period</p></div></div>
+            <div class="donut-wrap"><canvas id="shareChart"></canvas><div class="donut-center"><div><b id="shareTotal">—</b><span>total revenue</span></div></div></div>
+            <div class="donut-legend" id="shareLegend"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>Monthly Revenue</h3><p>Month-over-month performance</p></div></div>
+            <div id="table"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/pages/revenue.js"></script>
+</body>
+</html>

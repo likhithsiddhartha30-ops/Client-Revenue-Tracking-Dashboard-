@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview · WorthyOps Revenue Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
+
+        <section class="card hero fade-in">
+          <div>
+            <div class="eyebrow">Performance snapshot</div>
+            <h2 id="heroTitle">Client revenue at a glance</h2>
+            <p id="heroSub"></p>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-label">Revenue generated in period</div>
+            <div class="hero-stat-value" id="heroRevenue">—</div>
+            <div id="heroDelta"></div>
+          </div>
+        </section>
+
+        <section class="grid kpi-grid" id="kpis"></section>
+
+        <section class="grid g-2-1">
+          <div class="card">
+            <div class="card-head">
+              <div><h3>Revenue &amp; Deals Closed</h3><p>Monthly revenue with deal volume overlay</p></div>
+              <div class="legend"><span><i style="background:#2f6bff"></i>Revenue</span><span><i class="line" style="background:#a5c8ff"></i>Deals</span></div>
+            </div>
+            <div class="chart h-300"><canvas id="revChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>Pipeline Funnel</h3><p>From first lead to closed-won</p></div></div>
+            <div class="funnel" id="funnel"></div>
+          </div>
+        </section>
+
+        <section class="grid g-1-2">
+          <div class="card">
+            <div class="card-head"><div><h3>Key Ratios</h3><p>Efficiency across the pipeline</p></div></div>
+            <div class="ratios" id="ratios"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div><h3>Client Leaderboard</h3><p>All clients ranked by revenue in this period</p></div>
+              <a class="link" href="clients.html">View all clients →</a>
+            </div>
+            <div id="leaderboard"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/pages/overview.js"></script>
+</body>
+</html>

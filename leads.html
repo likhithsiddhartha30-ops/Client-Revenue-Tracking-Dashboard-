@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leads · WorthyOps Revenue Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
+
+        <section class="grid kpi-grid" id="kpis"></section>
+
+        <section class="grid g-2-1">
+          <div class="card">
+            <div class="card-head">
+              <div><h3>Leads per Month</h3><p>Inbound vs. outbound lead generation</p></div>
+              <div class="legend"><span><i style="background:#2f6bff"></i>Inbound</span><span><i style="background:#1e40af"></i>Outbound</span></div>
+            </div>
+            <div class="chart h-300"><canvas id="leadsChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>Lead Sources</h3><p>Share of total leads</p></div></div>
+            <div class="donut-wrap"><canvas id="sourceChart"></canvas><div class="donut-center"><div><b id="srcTotal">—</b><span>total leads</span></div></div></div>
+            <div class="donut-legend" id="srcLegend"></div>
+          </div>
+        </section>
+
+        <section class="grid g-1-1">
+          <div class="card">
+            <div class="card-head"><div><h3>Leads by Client</h3><p>Volume generated per client in this period</p></div></div>
+            <div class="chart h-260"><canvas id="clientChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h3>Lead → Meeting Rate</h3><p>How well leads convert into booked calls</p></div></div>
+            <div class="chart h-260"><canvas id="rateChart"></canvas></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><div><h3>Monthly Breakdown</h3><p>Lead generation by month</p></div></div>
+          <div id="table"></div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/pages/leads.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Entry · WorthyOps Revenue Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
+
+        <section class="grid g-1-2">
+          <div class="card">
+            <div class="card-head"><div><h3 id="formTitle">Log Monthly Numbers</h3><p>One entry per client per month. Saving an existing month updates it.</p></div></div>
+            <form id="entryForm" class="form-grid" autocomplete="off">
+              <div class="field"><label for="fClient">Client</label><select class="select input" id="fClient" required></select></div>
+              <div class="field"><label for="fMonth">Month</label><input class="input" type="month" id="fMonth" required></div>
+              <div class="field"><label for="fInbound">Inbound leads</label><input class="input" type="number" min="0" step="1" id="fInbound" required></div>
+              <div class="field"><label for="fOutbound">Outbound leads</label><input class="input" type="number" min="0" step="1" id="fOutbound" required></div>
+              <div class="field"><label for="fMeetings">Meetings booked</label><input class="input" type="number" min="0" step="1" id="fMeetings" required></div>
+              <div class="field"><label for="fShowed">Showed up</label><input class="input" type="number" min="0" step="1" id="fShowed" required></div>
+              <div class="field"><label for="fDeals">Deals closed</label><input class="input" type="number" min="0" step="1" id="fDeals" required></div>
+              <div class="field"><label for="fRevenue">Revenue (<span id="curSym">$</span>)</label><input class="input" type="number" min="0" step="0.01" id="fRevenue" required></div>
+              <div class="field full"><div class="form-note" id="formNote">Total leads = inbound + outbound.</div></div>
+              <div class="field full btn-row">
+                <button type="submit" class="btn btn-primary" id="saveBtn">Save entry</button>
+                <button type="button" class="btn btn-ghost" id="clearForm">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div><h3>Logged Records</h3><p id="recCount"></p></div>
+              <select class="select" id="recFilter" aria-label="Filter records by client" style="min-width:170px"></select>
+            </div>
+            <div id="records" style="max-height:520px;overflow:auto"></div>
+          </div>
+        </section>
+
+        <section class="grid g-1-1">
+          <div class="card">
+            <div class="card-head"><div><h3>Clients</h3><p>Add a new client account or remove one</p></div></div>
+            <form id="clientForm" class="form-grid" autocomplete="off">
+              <div class="field"><label for="cName">Client name</label><input class="input" id="cName" placeholder="e.g. Summit Coaching" required></div>
+              <div class="field"><label for="cIndustry">Industry / niche</label><input class="input" id="cIndustry" placeholder="e.g. Fitness Coaching"></div>
+              <div class="field full"><button type="submit" class="btn btn-primary">Add client</button></div>
+            </form>
+            <div id="clientList" style="margin-top:18px"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><h3>Settings &amp; Data</h3><p>Data is saved in this browser</p></div></div>
+            <div class="form-grid">
+              <div class="field"><label for="sCurrency">Currency symbol</label>
+                <select class="select input" id="sCurrency">
+                  <option value="$">$ — US Dollar</option><option value="₹">₹ — Indian Rupee</option><option value="€">€ — Euro</option>
+                  <option value="£">£ — British Pound</option><option value="AED ">AED — UAE Dirham</option>
+                </select>
+              </div>
+            </div>
+            <div class="btn-row" style="margin-top:20px">
+              <button class="btn" id="exportBtn">Export CSV</button>
+              <button class="btn" id="sampleBtn">Load sample data</button>
+              <button class="btn btn-danger" id="wipeBtn">Clear all data</button>
+            </div>
+            <p class="form-note" style="margin-top:14px">Sample data shows 5 demo clients. Clear it when you're ready to track real numbers.</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/pages/data.js"></script>
+</body>
+</html>
