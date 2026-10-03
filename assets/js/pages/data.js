@@ -78,22 +78,40 @@
     if (!bound) bind();
   }
 
+  // Runs a change against Supabase (when connected) or browser storage, then re-renders.
+  async function mutate(remoteFn, localFn, okMsg) {
+    try {
+      if (WO.backend.enabled) { await remoteFn(); await WO.refresh(); }
+      else { const d = WO.getData(); localFn(d); WO.saveData(d); }
+    } catch (err) {
+      WO.toast('Could not save: ' + (err.message || err));
+      return false;
+    }
+    if (okMsg) WO.toast(okMsg);
+    render();
+    return true;
+  }
+
   function bind() {
     bound = true;
 
-    $('entryForm').addEventListener('submit', e => {
+    $('entryForm').addEventListener('submit', async e => {
       e.preventDefault();
       const clientId = $('fClient').value, month = $('fMonth').value;
       if (!clientId) { WO.toast('Add a client first'); return; }
-      const d = WO.getData();
       const rec = { id: `${clientId}-${month}`, clientId, month };
       FIELDS.forEach(k => { rec[k] = Math.max(0, Number(input(k).value) || 0); });
-      const i = d.records.findIndex(r => r.clientId === clientId && r.month === month);
-      if (i >= 0) d.records[i] = rec; else d.records.push(rec);
-      WO.saveData(d);
-      WO.toast(i >= 0 ? 'Entry updated' : 'Entry saved');
-      render();
-      fillForm(rec);
+      const exists = WO.getData().records.some(r => r.clientId === clientId && r.month === month);
+      $('saveBtn').disabled = true;
+      const ok = await mutate(
+        () => WO.backend.upsertRecord(rec),
+        d => {
+          const i = d.records.findIndex(r => r.clientId === clientId && r.month === month);
+          if (i >= 0) d.records[i] = rec; else d.records.push(rec);
+        },
+        exists ? 'Entry updated' : 'Entry saved');
+      $('saveBtn').disabled = false;
+      if (ok) fillForm(rec);
     });
     $('clearForm').addEventListener('click', () => fillForm(null));
     $('fClient').addEventListener('change', loadExisting);
@@ -101,44 +119,48 @@
     FIELDS.forEach(k => input(k).addEventListener('input', validate));
 
     $('recFilter').addEventListener('change', e => { recFilter = e.target.value; render(); });
-    $('records').addEventListener('click', e => {
+    $('records').addEventListener('click', async e => {
       const edit = e.target.closest('[data-edit]'), del = e.target.closest('[data-del]');
-      const d = WO.getData();
+      const { records } = WO.getData();
       if (edit) {
-        const r = d.records.find(x => x.id === edit.dataset.edit);
+        const r = records.find(x => x.id === edit.dataset.edit);
         if (!r) return;
         $('fClient').value = r.clientId; $('fMonth').value = r.month;
         fillForm(r);
         $('entryForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       if (del && confirm('Delete this record?')) {
-        d.records = d.records.filter(x => x.id !== del.dataset.del);
-        WO.saveData(d); WO.toast('Record deleted'); render(); loadExisting();
+        const r = records.find(x => x.id === del.dataset.del);
+        if (!r) return;
+        await mutate(() => WO.backend.deleteRecord(r), d => { d.records = d.records.filter(x => x.id !== r.id); }, 'Record deleted');
+        loadExisting();
       }
     });
 
-    $('clientForm').addEventListener('submit', e => {
+    $('clientForm').addEventListener('submit', async e => {
       e.preventDefault();
       const name = $('cName').value.trim();
       if (!name) return;
-      const d = WO.getData();
-      const c = { id: 'c' + Date.now().toString(36), name, industry: $('cIndustry').value.trim() };
-      d.clients.push(c);
-      WO.saveData(d);
+      const industry = $('cIndustry').value.trim();
+      let newId = 'c' + Date.now().toString(36);
+      const ok = await mutate(
+        async () => { newId = (await WO.backend.addClient({ name, industry })).id; },
+        d => { d.clients.push({ id: newId, name, industry }); },
+        `${name} added`);
+      if (!ok) return;
       $('clientForm').reset();
-      WO.toast(`${name} added`);
-      render();
-      $('fClient').value = c.id; loadExisting();
+      $('fClient').value = newId; loadExisting();
     });
-    $('clientList').addEventListener('click', e => {
+    $('clientList').addEventListener('click', async e => {
       const b = e.target.closest('[data-delclient]');
       if (!b) return;
-      const d = WO.getData();
-      const c = d.clients.find(x => x.id === b.dataset.delclient);
+      const c = WO.getData().clients.find(x => x.id === b.dataset.delclient);
       if (!c || !confirm(`Remove ${c.name} and all of its records?`)) return;
-      d.clients = d.clients.filter(x => x.id !== c.id);
-      d.records = d.records.filter(x => x.clientId !== c.id);
-      WO.saveData(d); WO.toast(`${c.name} removed`); render(); loadExisting();
+      await mutate(
+        () => WO.backend.deleteClient(c.id),
+        d => { d.clients = d.clients.filter(x => x.id !== c.id); d.records = d.records.filter(x => x.clientId !== c.id); },
+        `${c.name} removed`);
+      loadExisting();
     });
 
     $('sCurrency').addEventListener('change', e => { WO.setSettings({ currency: e.target.value }); WO.toast('Currency updated'); render(); });
@@ -155,13 +177,20 @@
       a.href = URL.createObjectURL(blob); a.download = 'worthyops-revenue-data.csv';
       a.click(); URL.revokeObjectURL(a.href);
     });
-    $('sampleBtn').addEventListener('click', () => {
-      if (!confirm('Replace all current data with the sample data?')) return;
-      WO.resetData(); WO.setFilters({ client: 'all' }); WO.toast('Sample data loaded'); render(); loadExisting();
+    $('sampleBtn').addEventListener('click', async () => {
+      const msg = WO.backend.enabled ? 'Add the 5 demo clients and their sample records to the database?' : 'Replace all current data with the sample data?';
+      if (!confirm(msg)) return;
+      WO.setFilters({ client: 'all' });
+      if (WO.backend.enabled) await mutate(() => WO.backend.loadSample(WO_SEED), () => {}, 'Sample data loaded');
+      else { WO.resetData(); WO.toast('Sample data loaded'); render(); }
+      loadExisting();
     });
-    $('wipeBtn').addEventListener('click', () => {
-      if (!confirm('Delete ALL clients and records from this browser? This cannot be undone.')) return;
-      WO.saveData({ clients: [], records: [] }); WO.setFilters({ client: 'all' }); WO.toast('All data cleared'); render(); fillForm(null);
+    $('wipeBtn').addEventListener('click', async () => {
+      const where = WO.backend.enabled ? 'from the database' : 'from this browser';
+      if (!confirm(`Delete ALL clients and records ${where}? This cannot be undone.`)) return;
+      WO.setFilters({ client: 'all' });
+      await mutate(() => WO.backend.wipe(), d => { d.clients = []; d.records = []; }, 'All data cleared');
+      fillForm(null);
     });
   }
 
@@ -171,6 +200,5 @@
     subtitle: 'Log monthly numbers for each client. Every dashboard updates instantly',
     filters: false,
     render
-  });
-  loadExisting();
+  }).then(loadExisting);
 })();

@@ -36,6 +36,9 @@ window.WO = (function () {
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
     refresh: '<path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>'
   };
   const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[n] || ''}</svg>`;
@@ -45,9 +48,15 @@ window.WO = (function () {
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
   function remove(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
 
+  const BE = window.WO_BACKEND || { enabled: false };
+  let remote = null; // { clients, records } fetched from Supabase when the backend is enabled
+  let session = null;
+
   function getData() {
+    if (BE.enabled) return remote || { clients: [], records: [] };
     return { clients: load(LS.clients, null) || WO_SEED.clients, records: load(LS.records, null) || WO_SEED.records };
   }
+  async function refresh() { if (BE.enabled) remote = await BE.fetchAll(); }
   function saveData(d) { save(LS.clients, d.clients); save(LS.records, d.records); }
   function resetData() { remove(LS.clients); remove(LS.records); }
   function getFilters() { return Object.assign({ client: 'all', range: '6' }, load(LS.filters, {})); }
@@ -254,7 +263,14 @@ window.WO = (function () {
         <div class="side-card-label">Reporting window</div>
         <div class="side-card-value" id="sidePeriod">—</div>
         <div class="side-card-meta" id="sideMeta"></div>
-      </div></div>`;
+      </div>
+      ${session ? `<div class="side-user">
+        <span class="avatar" style="background:linear-gradient(135deg,#2f6bff,#1e3a8a)">${esc((session.user.email || '?')[0].toUpperCase())}</span>
+        <div class="side-user-email" title="${esc(session.user.email || '')}">${esc(session.user.email || '')}</div>
+        <button class="btn btn-sm btn-icon" id="signOutBtn" title="Sign out" aria-label="Sign out">${icon('logout')}</button>
+      </div>` : ''}</div>`;
+    const so = document.getElementById('signOutBtn');
+    if (so) so.addEventListener('click', async () => { await BE.signOut(); location.replace('login.html'); });
 
     const top = document.getElementById('topbar');
     top.innerHTML = `
@@ -311,15 +327,28 @@ window.WO = (function () {
     opts.render(ctx);
   }
 
-  function init(opts) {
+  async function init(opts) {
     setupChartDefaults();
-    renderShell(opts);
+    if (BE.enabled) {
+      session = await BE.requireAuth();
+      document.documentElement.classList.remove('auth-pending');
+      renderShell(opts);
+      try {
+        await refresh();
+      } catch (e) {
+        document.getElementById('content').innerHTML = `<div class="card empty"><h2>Couldn't load data</h2><p>${esc(e.message || e)}</p><button class="btn btn-primary" onclick="location.reload()">Retry</button></div>`;
+        return;
+      }
+      BE.client.auth.onAuthStateChange(evt => { if (evt === 'SIGNED_OUT') location.replace('login.html'); });
+    } else {
+      renderShell(opts);
+      window.addEventListener('storage', () => run(opts));
+    }
     run(opts);
-    window.addEventListener('storage', () => run(opts));
   }
 
   return {
-    init, rerender: run, icon, PALETTE,
+    init, rerender: run, refresh, icon, PALETTE, backend: BE,
     getData, saveData, resetData, getFilters, setFilters, getSettings, setSettings,
     sum, byMonth, byClient, ratio, clientColor,
     num, compact, money, pct, delta, deltaHTML, monthLabel, periodLabel, esc, avatar, initials,

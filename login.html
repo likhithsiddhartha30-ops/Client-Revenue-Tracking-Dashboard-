@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · WorthyOps Revenue Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="assets/js/config.js"></script>
+</head>
+<body class="login-body">
+  <div class="login">
+    <section class="login-art" aria-hidden="true">
+      <div class="login-art-inner">
+        <div class="brand">
+          <div class="brand-mark">W</div>
+          <div><div class="brand-name">Worthy<span>Ops</span></div><div class="brand-sub">Client Revenue Tracking</div></div>
+        </div>
+        <div class="login-pitch">
+          <div class="eyebrow">Revenue intelligence</div>
+          <h1>Every lead, meeting and deal, tracked to revenue.</h1>
+          <p>One place to see the pipeline you've built for each client, from first lead to closed-won.</p>
+        </div>
+        <div class="login-stats">
+          <div><span>01</span><b>Leads generated</b></div>
+          <div><span>02</span><b>Meetings booked</b></div>
+          <div><span>03</span><b>Deals closed</b></div>
+          <div><span>04</span><b>Revenue</b></div>
+        </div>
+        <svg class="login-wave" viewBox="0 0 400 120" preserveAspectRatio="none">
+          <defs><linearGradient id="lw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6bff" stop-opacity=".45"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 95 C 50 80, 80 88, 120 70 S 200 60, 240 48 S 330 30, 400 12 L400 120 L0 120Z" fill="url(#lw)"/>
+          <path d="M0 95 C 50 80, 80 88, 120 70 S 200 60, 240 48 S 330 30, 400 12" fill="none" stroke="#5aa9ff" stroke-width="2.5"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-card">
+        <div class="brand login-mobile-brand">
+          <div class="brand-mark">W</div>
+          <div><div class="brand-name">Worthy<span>Ops</span></div><div class="brand-sub">Client Revenue Tracking</div></div>
+        </div>
+
+        <!-- Sign in -->
+        <form id="signinForm" class="login-form" autocomplete="on">
+          <h2>Welcome back</h2>
+          <p class="login-sub">Sign in to your revenue dashboard</p>
+          <div class="field"><label for="email">Email</label>
+            <div class="input-icon"><span id="iMail"></span><input class="input" type="email" id="email" autocomplete="username" placeholder="you@worthyops.com" required></div>
+          </div>
+          <div class="field"><label for="password">Password <a href="#" class="link login-forgot" id="forgotLink">Forgot password?</a></label>
+            <div class="input-icon"><span id="iLock"></span><input class="input" type="password" id="password" autocomplete="current-password" placeholder="••••••••" required>
+              <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">Show</button></div>
+          </div>
+          <div class="login-msg" id="signinMsg" role="alert"></div>
+          <button class="btn btn-primary login-btn" type="submit" id="signinBtn">Sign in</button>
+          <p class="login-foot">Access is invite-only. Ask your WorthyOps admin for an account.</p>
+        </form>
+
+        <!-- Forgot password -->
+        <form id="resetForm" class="login-form" hidden>
+          <h2>Reset password</h2>
+          <p class="login-sub">We'll email you a link to set a new password</p>
+          <div class="field"><label for="resetEmail">Email</label><input class="input" type="email" id="resetEmail" placeholder="you@worthyops.com" required></div>
+          <div class="login-msg" id="resetMsg" role="alert"></div>
+          <button class="btn btn-primary login-btn" type="submit">Send reset link</button>
+          <a href="#" class="link login-back" id="backLink">← Back to sign in</a>
+        </form>
+
+        <!-- New password (after clicking the emailed link) -->
+        <form id="newPwForm" class="login-form" hidden>
+          <h2>Set a new password</h2>
+          <p class="login-sub">Choose a password with at least 8 characters</p>
+          <div class="field"><label for="newPw">New password</label><input class="input" type="password" id="newPw" minlength="8" autocomplete="new-password" required></div>
+          <div class="login-msg" id="newPwMsg" role="alert"></div>
+          <button class="btn btn-primary login-btn" type="submit">Update password</button>
+        </form>
+
+        <!-- Not configured -->
+        <div id="notConfigured" class="login-form" hidden>
+          <h2>Login isn't connected yet</h2>
+          <p class="login-sub">Add your Supabase project URL and anon key to <code>assets/js/config.js</code> to turn on sign-in. Until then the dashboard runs in local demo mode.</p>
+          <a class="btn btn-primary login-btn" href="index.html">Open demo dashboard</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/backend.js"></script>
+  <script src="assets/js/pages/login.js"></script>
+</body>
+</html>
