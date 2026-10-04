@@ -23,8 +23,8 @@ WO.init({
       data: {
         labels,
         datasets: [
-          { type: 'line', label: 'Cumulative', data: cumulative, yAxisID: 'y1', borderColor: '#a5c8ff', backgroundColor: WO.fade('#5aa9ff', 0.12, 0), fill: true, pointBackgroundColor: '#a5c8ff', pointBorderColor: '#03050b', order: 0 },
-          { type: 'bar', label: 'Monthly revenue', data: s.map(x => x.revenue), backgroundColor: WO.barFill(), maxBarThickness: 44, order: 1 }
+          { type: 'line', label: 'Cumulative', data: cumulative, yAxisID: 'y1', borderColor: '#dbe5ff', backgroundColor: WO.fade('#8fb4ff', 0.12, 0), fill: true, pointBackgroundColor: '#dbe5ff', pointBorderColor: '#0e1014', order: 0 },
+          { type: 'bar', label: 'Monthly revenue', data: s.map(x => x.revenue), backgroundColor: WO.barFill(), maxBarThickness: 30, order: 1 }
         ]
       },
       options: {

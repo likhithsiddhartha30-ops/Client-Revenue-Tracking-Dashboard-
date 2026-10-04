@@ -25,8 +25,8 @@ WO.init({
       data: {
         labels,
         datasets: [
-          { type: 'line', label: 'Deals', data: s.map(x => x.deals), yAxisID: 'y1', borderColor: '#a5c8ff', pointBackgroundColor: '#a5c8ff', pointBorderColor: '#03050b', order: 0 },
-          { type: 'bar', label: 'Revenue', data: s.map(x => x.revenue), backgroundColor: WO.barFill(), maxBarThickness: 38, order: 1 }
+          { type: 'line', label: 'Deals', data: s.map(x => x.deals), yAxisID: 'y1', borderColor: '#dbe5ff', pointBackgroundColor: '#dbe5ff', pointBorderColor: '#0e1014', order: 0 },
+          { type: 'bar', label: 'Revenue', data: s.map(x => x.revenue), backgroundColor: WO.barFill(), maxBarThickness: 26, order: 1 }
         ]
       },
       options: {

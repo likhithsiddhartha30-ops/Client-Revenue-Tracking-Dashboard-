@@ -30,7 +30,7 @@ WO.init({
           <div>Close<b>${WO.pct(WO.ratio(r.deals, r.showed), 0)}</b></div>
         </div>
         <div class="btn-row">
-          <button class="btn btn-primary btn-sm" data-open="${WO.esc(r.client.id)}" style="flex:1">Open dashboard →</button>
+          <button class="btn btn-sm" data-open="${WO.esc(r.client.id)}" style="flex:1">Open dashboard →</button>
         </div>
       </div>`).join('');
     rows.forEach((r, i) => WO.spark(`cc-${i}`, r.series.map(x => x.revenue), r.color));

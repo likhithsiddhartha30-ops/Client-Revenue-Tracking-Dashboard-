@@ -19,15 +19,15 @@ WO.init({
       data: {
         labels,
         datasets: [
-          { label: 'Inbound', data: s.map(x => x.inbound), backgroundColor: WO.barFill('#5aa9ff', '#2f6bff'), maxBarThickness: 38 },
-          { label: 'Outbound', data: s.map(x => x.outbound), backgroundColor: '#1e40af', maxBarThickness: 38 }
+          { label: 'Inbound', data: s.map(x => x.inbound), backgroundColor: WO.barFill('#8fb4ff', '#4f8cff'), maxBarThickness: 26 },
+          { label: 'Outbound', data: s.map(x => x.outbound), backgroundColor: '#2a3550', maxBarThickness: 26 }
         ]
       },
       options: { scales: { x: WO.xAxis({ stacked: true }), y: WO.yAxis(WO.num, { stacked: true }) } }
     });
 
     document.getElementById('srcTotal').textContent = WO.num(t.leads);
-    const src = [{ label: 'Inbound', value: t.inbound, color: '#2f6bff' }, { label: 'Outbound', value: t.outbound, color: '#1e40af' }];
+    const src = [{ label: 'Inbound', value: t.inbound, color: '#4f8cff' }, { label: 'Outbound', value: t.outbound, color: '#2a3550' }];
     WO.donut('sourceChart', src.map(x => x.label), src.map(x => x.value), src.map(x => x.color));
     WO.donutLegend('#srcLegend', src);
 
@@ -38,7 +38,7 @@ WO.init({
         labels: byClient.map(r => r.client.name),
         datasets: [{
           label: 'Leads', data: byClient.map(r => r.leads), maxBarThickness: 22,
-          backgroundColor: byClient.map(r => (!ctx.client || r.client.id === ctx.client.id ? '#2f6bff' : 'rgba(47,107,255,0.25)'))
+          backgroundColor: byClient.map(r => (!ctx.client || r.client.id === ctx.client.id ? '#4f8cff' : 'rgba(79,140,255,0.22)'))
         }]
       },
       options: { indexAxis: 'y', scales: { x: WO.yAxis(WO.num), y: WO.xAxis() } }
@@ -48,7 +48,7 @@ WO.init({
       type: 'line',
       data: {
         labels,
-        datasets: [{ label: 'Lead → Meeting', data: s.map(x => +(WO.ratio(x.meetings, x.leads) * 100).toFixed(1)), borderColor: '#5aa9ff', backgroundColor: WO.fade('#5aa9ff'), fill: true, pointBackgroundColor: '#5aa9ff', pointBorderColor: '#03050b' }]
+        datasets: [{ label: 'Lead → Meeting', data: s.map(x => +(WO.ratio(x.meetings, x.leads) * 100).toFixed(1)), borderColor: '#8fb4ff', backgroundColor: WO.fade('#8fb4ff'), fill: true, pointBackgroundColor: '#8fb4ff', pointBorderColor: '#0e1014' }]
       },
       options: {
         plugins: { tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.raw}%` } } },

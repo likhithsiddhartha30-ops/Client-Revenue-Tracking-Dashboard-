@@ -20,8 +20,8 @@ WO.init({
       data: {
         labels,
         datasets: [
-          { type: 'line', label: 'Show rate', data: s.map(x => +(WO.ratio(x.showed, x.meetings) * 100).toFixed(1)), yAxisID: 'y1', borderColor: '#a5c8ff', pointBackgroundColor: '#a5c8ff', pointBorderColor: '#03050b', order: 0 },
-          { type: 'bar', label: 'Booked', data: s.map(x => x.meetings), backgroundColor: '#1e40af', maxBarThickness: 22, order: 1 },
+          { type: 'line', label: 'Show rate', data: s.map(x => +(WO.ratio(x.showed, x.meetings) * 100).toFixed(1)), yAxisID: 'y1', borderColor: '#dbe5ff', pointBackgroundColor: '#dbe5ff', pointBorderColor: '#0e1014', order: 0 },
+          { type: 'bar', label: 'Booked', data: s.map(x => x.meetings), backgroundColor: '#2a3550', maxBarThickness: 22, order: 1 },
           { type: 'bar', label: 'Showed', data: s.map(x => x.showed), backgroundColor: WO.barFill(), maxBarThickness: 22, order: 1 }
         ]
       },
@@ -32,7 +32,7 @@ WO.init({
     });
 
     document.getElementById('showRate').textContent = WO.pct(showRate);
-    const att = [{ label: 'Showed up', value: t.showed, color: '#2f6bff' }, { label: 'No-show', value: noShow, color: '#1a2547' }];
+    const att = [{ label: 'Showed up', value: t.showed, color: '#4f8cff' }, { label: 'No-show', value: noShow, color: '#1c2029' }];
     WO.donut('attChart', att.map(x => x.label), att.map(x => x.value), att.map(x => x.color));
     WO.donutLegend('#attLegend', att);
 
@@ -43,8 +43,8 @@ WO.init({
       data: {
         labels: byClient.map(r => r.client.name),
         datasets: [
-          { label: 'Booked', data: byClient.map(r => r.meetings), backgroundColor: byClient.map(r => dim(r, '#1e40af')), maxBarThickness: 30 },
-          { label: 'Showed', data: byClient.map(r => r.showed), backgroundColor: byClient.map(r => dim(r, '#5aa9ff')), maxBarThickness: 30 }
+          { label: 'Booked', data: byClient.map(r => r.meetings), backgroundColor: byClient.map(r => dim(r, '#2a3550')), maxBarThickness: 30 },
+          { label: 'Showed', data: byClient.map(r => r.showed), backgroundColor: byClient.map(r => dim(r, '#8fb4ff')), maxBarThickness: 30 }
         ]
       },
       options: { scales: { x: WO.xAxis(), y: WO.yAxis(WO.num) } }

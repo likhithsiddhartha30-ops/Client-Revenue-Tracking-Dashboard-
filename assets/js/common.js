@@ -4,7 +4,7 @@
    ============================================================ */
 window.WO = (function () {
   const LS = { records: 'wo_records_v1', clients: 'wo_clients_v1', filters: 'wo_filters_v1', settings: 'wo_settings_v1' };
-  const PALETTE = ['#2f6bff', '#5aa9ff', '#a5c8ff', '#1e40af', '#38bdf8', '#818cf8', '#60a5fa', '#0369a1'];
+  const PALETTE = ['#4f8cff', '#8fb4ff', '#2f5fcc', '#c7d6f5', '#6b7fa8', '#7aa2ff', '#3a4a6b', '#a9bde6'];
 
   const NAV = [
     { id: 'overview', href: 'index.html',    label: 'Overview',     icon: 'grid' },
@@ -124,7 +124,7 @@ window.WO = (function () {
   const periodLabel = months => months.length ? `${monthLabel(months[0], true)} – ${monthLabel(months[months.length - 1], true)}` : 'No data yet';
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const initials = name => String(name).split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
-  const avatar = (name, color) => `<span class="avatar" style="background:linear-gradient(135deg, ${color}, ${hexA(color, 0.45)})">${esc(initials(name))}</span>`;
+  const avatar = (name, color) => `<span class="avatar" style="background:${hexA(color, 0.14)};color:${color}">${esc(initials(name))}</span>`;
 
   /* ---------- Charts ---------- */
   const charts = {};
@@ -141,39 +141,39 @@ window.WO = (function () {
       return g;
     };
   }
-  function barFill(from = '#5aa9ff', to = '#2f6bff') {
+  function barFill(from = '#4f8cff', to = '#4f8cff') {
     return c => {
       const { ctx, chartArea } = c.chart;
       if (!chartArea) return to;
       const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-      g.addColorStop(0, from); g.addColorStop(1, hexA(to, 0.55));
+      g.addColorStop(0, from); g.addColorStop(1, hexA(to, 0.35));
       return g;
     };
   }
-  function xAxis(extra) { return Object.assign({ grid: { display: false }, border: { display: false }, ticks: { color: '#6b7597' } }, extra || {}); }
+  function xAxis(extra) { return Object.assign({ grid: { display: false }, border: { display: false }, ticks: { color: '#5c6270' } }, extra || {}); }
   function yAxis(fmt, extra) {
-    const ticks = { color: '#6b7597', padding: 8, maxTicksLimit: 6 };
+    const ticks = { color: '#5c6270', padding: 8, maxTicksLimit: 6 };
     if (fmt) ticks.callback = v => fmt(v);
-    return Object.assign({ beginAtZero: true, grid: { color: 'rgba(120,150,255,0.07)' }, border: { display: false }, ticks }, extra || {});
+    return Object.assign({ beginAtZero: true, grid: { color: 'rgba(255,255,255,0.045)' }, border: { display: false }, ticks }, extra || {});
   }
   function setupChartDefaults() {
     if (typeof Chart === 'undefined') return;
     const d = Chart.defaults;
-    d.color = '#8a96b8';
+    d.color = '#8b919e';
     d.font.family = 'Inter, system-ui, sans-serif';
     d.font.size = 11.5;
-    d.borderColor = 'rgba(120,150,255,0.08)';
+    d.borderColor = 'rgba(255,255,255,0.06)';
     d.maintainAspectRatio = false;
     d.plugins.legend.display = false;
     Object.assign(d.plugins.tooltip, {
-      backgroundColor: 'rgba(7,11,24,0.96)', borderColor: 'rgba(90,169,255,0.35)', borderWidth: 1,
-      titleColor: '#eaf0ff', bodyColor: '#b8c2e0', padding: 12, cornerRadius: 10, boxPadding: 5,
+      backgroundColor: 'rgba(19,22,28,0.98)', borderColor: 'rgba(255,255,255,0.10)', borderWidth: 1,
+      titleColor: '#f2f4f8', bodyColor: '#b4bac6', padding: 12, cornerRadius: 8, boxPadding: 5,
       usePointStyle: true, titleFont: { weight: '600' }
     });
-    d.elements.bar.borderRadius = 6;
+    d.elements.bar.borderRadius = 4;
     d.elements.bar.borderSkipped = false;
     d.elements.line.tension = 0.38;
-    d.elements.line.borderWidth = 2.5;
+    d.elements.line.borderWidth = 2;
     d.elements.point.radius = 0;
     d.elements.point.hoverRadius = 5;
     d.elements.point.hoverBorderWidth = 2;
@@ -188,10 +188,10 @@ window.WO = (function () {
     charts[id] = new Chart(el, cfg);
     return charts[id];
   }
-  function spark(id, data, color = '#2f6bff') {
+  function spark(id, data, color = '#4f8cff') {
     return chart(id, {
       type: 'line',
-      data: { labels: data.map((_, i) => i), datasets: [{ data, borderColor: color, borderWidth: 2, fill: true, backgroundColor: fade(color, 0.3, 0) }] },
+      data: { labels: data.map((_, i) => i), datasets: [{ data, borderColor: color, borderWidth: 1.75, fill: true, backgroundColor: fade(color, 0.16, 0) }] },
       options: { events: [], animation: { duration: 700 }, plugins: { tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false, beginAtZero: false } }, layout: { padding: { top: 4 } } }
     });
   }
@@ -214,7 +214,7 @@ window.WO = (function () {
         <div class="kpi-foot">${k.sub ? `<span class="kpi-sub">${k.sub}</span>` : deltaHTML(k.delta, { invert: k.invert })}</div>
         ${k.spark ? `<div class="kpi-spark"><canvas id="${base}-sp${i}"></canvas></div>` : ''}
       </div>`).join('');
-    items.forEach((k, i) => { if (k.spark) spark(`${base}-sp${i}`, k.spark, k.accent ? '#5aa9ff' : '#2f6bff'); });
+    items.forEach((k, i) => { if (k.spark) spark(`${base}-sp${i}`, k.spark, '#4f8cff'); });
   }
 
   function table(sel, cols, rows, opt = {}) {
@@ -265,7 +265,7 @@ window.WO = (function () {
         <div class="side-card-meta" id="sideMeta"></div>
       </div>
       ${session ? `<div class="side-user">
-        <span class="avatar" style="background:linear-gradient(135deg,#2f6bff,#1e3a8a)">${esc((session.user.email || '?')[0].toUpperCase())}</span>
+        <span class="avatar" style="background:rgba(79,140,255,0.16);color:#8fb4ff">${esc((session.user.email || '?')[0].toUpperCase())}</span>
         <div class="side-user-email" title="${esc(session.user.email || '')}">${esc(session.user.email || '')}</div>
         <button class="btn btn-sm btn-icon" id="signOutBtn" title="Sign out" aria-label="Sign out">${icon('logout')}</button>
       </div>` : ''}</div>`;

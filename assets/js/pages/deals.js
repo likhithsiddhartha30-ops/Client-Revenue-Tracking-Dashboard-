@@ -21,8 +21,8 @@ WO.init({
       data: {
         labels,
         datasets: [
-          { type: 'line', label: 'Close rate', data: s.map(x => +(WO.ratio(x.deals, x.showed) * 100).toFixed(1)), yAxisID: 'y1', borderColor: '#a5c8ff', pointBackgroundColor: '#a5c8ff', pointBorderColor: '#03050b', order: 0 },
-          { type: 'bar', label: 'Deals', data: s.map(x => x.deals), backgroundColor: WO.barFill(), maxBarThickness: 38, order: 1 }
+          { type: 'line', label: 'Close rate', data: s.map(x => +(WO.ratio(x.deals, x.showed) * 100).toFixed(1)), yAxisID: 'y1', borderColor: '#dbe5ff', pointBackgroundColor: '#dbe5ff', pointBorderColor: '#0e1014', order: 0 },
+          { type: 'bar', label: 'Deals', data: s.map(x => x.deals), backgroundColor: WO.barFill(), maxBarThickness: 26, order: 1 }
         ]
       },
       options: {
@@ -35,12 +35,12 @@ WO.init({
     document.getElementById('closeRate').textContent = WO.pct(closeRate);
     WO.chart('gauge', {
       type: 'doughnut',
-      data: { labels: ['Closed', 'Not closed'], datasets: [{ data: [t.deals, Math.max(0, t.showed - t.deals)], backgroundColor: ['#2f6bff', '#1a2547'], borderRadius: 6, spacing: 3 }] },
+      data: { labels: ['Closed', 'Not closed'], datasets: [{ data: [t.deals, Math.max(0, t.showed - t.deals)], backgroundColor: ['#4f8cff', '#1c2029'], borderRadius: 6, spacing: 3 }] },
       options: { cutout: '76%', rotation: -90, circumference: 180, interaction: { mode: 'nearest', intersect: true }, plugins: { tooltip: { callbacks: { label: c => ` ${c.label}: ${WO.num(c.raw)}` } } } }
     });
     WO.donutLegend('#gaugeLegend', [
-      { label: 'Closed-won', value: t.deals, color: '#2f6bff' },
-      { label: 'Attended, not closed', value: Math.max(0, t.showed - t.deals), color: '#1a2547' }
+      { label: 'Closed-won', value: t.deals, color: '#4f8cff' },
+      { label: 'Attended, not closed', value: Math.max(0, t.showed - t.deals), color: '#1c2029' }
     ]);
 
     const byClient = WO.byClient(ctx.rangeAll, ctx.clients).sort((a, b) => b.deals - a.deals);
@@ -48,7 +48,7 @@ WO.init({
       type: 'bar',
       data: {
         labels: byClient.map(r => r.client.name),
-        datasets: [{ label: 'Deals', data: byClient.map(r => r.deals), maxBarThickness: 22, backgroundColor: byClient.map(r => (!ctx.client || r.client.id === ctx.client.id ? '#2f6bff' : 'rgba(47,107,255,0.25)')) }]
+        datasets: [{ label: 'Deals', data: byClient.map(r => r.deals), maxBarThickness: 22, backgroundColor: byClient.map(r => (!ctx.client || r.client.id === ctx.client.id ? '#4f8cff' : 'rgba(79,140,255,0.22)')) }]
       },
       options: { indexAxis: 'y', scales: { x: WO.yAxis(WO.num), y: WO.xAxis() } }
     });
@@ -57,7 +57,7 @@ WO.init({
       type: 'line',
       data: {
         labels,
-        datasets: [{ label: 'Avg. deal size', data: s.map(x => Math.round(WO.ratio(x.revenue, x.deals))), borderColor: '#5aa9ff', backgroundColor: WO.fade('#5aa9ff'), fill: true, pointBackgroundColor: '#5aa9ff', pointBorderColor: '#03050b' }]
+        datasets: [{ label: 'Avg. deal size', data: s.map(x => Math.round(WO.ratio(x.revenue, x.deals))), borderColor: '#8fb4ff', backgroundColor: WO.fade('#8fb4ff'), fill: true, pointBackgroundColor: '#8fb4ff', pointBorderColor: '#0e1014' }]
       },
       options: {
         plugins: { tooltip: { callbacks: { label: c => ` Avg. deal size: ${WO.money(c.raw)}` } } },
