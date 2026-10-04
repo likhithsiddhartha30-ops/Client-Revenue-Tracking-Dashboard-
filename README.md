@@ -27,7 +27,7 @@ Then open http://localhost:5173.
 
 ## Login & database (Supabase)
 
-The dashboard signs users in with Supabase Auth and stores data in the **Worthyops-Revenue-Tracking** Supabase project.
+The dashboard signs users in with Supabase Auth and stores data in the **Worthyops-Client-Revenue-Tracking** Supabase project.
 
 - Connection settings live in `assets/js/config.js` (project URL + publishable key, which is safe to ship in the browser).
 - `supabase/schema.sql` creates the `clients` and `monthly_records` tables, the `client_monthly_summary` view and Row Level Security so only signed-in users can read or write. `supabase/seed.sql` loads the demo data.
