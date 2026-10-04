@@ -11,7 +11,7 @@ WO.init({
       { label: 'Total Leads', icon: 'users', value: WO.num(t.leads), delta: WO.delta(t.leads, p.leads), spark: s.map(x => x.leads), accent: true },
       { label: 'Inbound Leads', icon: 'inbox', value: WO.num(t.inbound), delta: WO.delta(t.inbound, p.inbound), spark: s.map(x => x.inbound) },
       { label: 'Outbound Leads', icon: 'send', value: WO.num(t.outbound), delta: WO.delta(t.outbound, p.outbound), spark: s.map(x => x.outbound) },
-      { label: 'Avg. Leads / Month', icon: 'layers', value: WO.num(WO.ratio(t.leads, ctx.months.length)), sub: `Best month: ${WO.monthLabel(best.month, true)} (${WO.num(best.leads)})` }
+      { label: 'Avg. Leads / Month', icon: 'layers', value: WO.num(WO.ratio(t.leads, ctx.months.length)), sub: best.leads ? `Best month: ${WO.monthLabel(best.month, true)} (${WO.num(best.leads)})` : 'No leads logged yet' }
     ]);
 
     WO.chart('leadsChart', {

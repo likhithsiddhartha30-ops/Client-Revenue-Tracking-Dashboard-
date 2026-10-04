@@ -52,14 +52,8 @@ select
 from public.monthly_records r
 join public.clients c on c.id = r.client_id;
 
--- Row Level Security: only signed-in users can read or write
+-- Row Level Security: no access until the policies in roles.sql are applied
 alter table public.clients enable row level security;
 alter table public.monthly_records enable row level security;
 
-drop policy if exists "Signed-in users manage clients" on public.clients;
-create policy "Signed-in users manage clients" on public.clients
-  for all to authenticated using (true) with check (true);
-
-drop policy if exists "Signed-in users manage records" on public.monthly_records;
-create policy "Signed-in users manage records" on public.monthly_records
-  for all to authenticated using (true) with check (true);
+-- Next: run supabase/roles.sql (team / client access rules).

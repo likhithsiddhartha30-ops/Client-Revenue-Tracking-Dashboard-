@@ -33,11 +33,8 @@ WO.init({
 
     // Half-donut gauge
     document.getElementById('closeRate').textContent = WO.pct(closeRate);
-    WO.chart('gauge', {
-      type: 'doughnut',
-      data: { labels: ['Closed', 'Not closed'], datasets: [{ data: [t.deals, Math.max(0, t.showed - t.deals)], backgroundColor: ['#4f8cff', '#1c2029'], borderRadius: 6, spacing: 3 }] },
-      options: { cutout: '76%', rotation: -90, circumference: 180, interaction: { mode: 'nearest', intersect: true }, plugins: { tooltip: { callbacks: { label: c => ` ${c.label}: ${WO.num(c.raw)}` } } } }
-    });
+    WO.donut('gauge', ['Closed', 'Not closed'], [t.deals, Math.max(0, t.showed - t.deals)], ['#4f8cff', '#1c2029'], null,
+      { cutout: '76%', rotation: -90, circumference: 180 });
     WO.donutLegend('#gaugeLegend', [
       { label: 'Closed-won', value: t.deals, color: '#4f8cff' },
       { label: 'Attended, not closed', value: Math.max(0, t.showed - t.deals), color: '#1c2029' }

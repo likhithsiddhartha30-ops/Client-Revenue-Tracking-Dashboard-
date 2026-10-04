@@ -1,5 +1,6 @@
 WO.init({
   page: 'clients',
+  teamOnly: true,
   title: 'Clients',
   subtitle: 'Every client account side by side. Open one to filter all dashboards to it',
   render(ctx) {
@@ -49,6 +50,6 @@ WO.init({
       { label: 'Close Rate', num: true, render: r => WO.pct(WO.ratio(r.deals, r.showed)) },
       { label: 'Avg. Deal', num: true, render: r => WO.money(WO.ratio(r.revenue, r.deals)) },
       { label: 'Revenue', num: true, render: r => `<b>${WO.money(r.revenue)}</b>` }
-    ], rows, { rowClass: r => (ctx.client && r.client.id === ctx.client.id ? 'hl' : '') });
+    ], rows, { rowClass: r => (ctx.client && r.client.id === ctx.client.id ? 'hl' : ''), empty: 'No clients yet. Use <b>Add data</b> to add your first client.' });
   }
 });

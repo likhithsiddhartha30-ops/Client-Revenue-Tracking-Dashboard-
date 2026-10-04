@@ -44,7 +44,7 @@ WO.init({
     document.getElementById('funnel').innerHTML = stages.map(([label, v], i) => `
       <div class="f-row">
         <div class="f-meta"><span>${label}</span><b>${WO.num(v)}</b></div>
-        <div class="f-track"><div class="f-bar" style="width:${Math.max(3, WO.ratio(v, t.leads) * 100)}%"></div></div>
+        <div class="f-track"><div class="f-bar" style="width:${v ? Math.max(3, WO.ratio(v, t.leads) * 100) : 0}%"></div></div>
         ${i < stages.length - 1 ? `<div class="f-conv">↓ <b>${WO.pct(WO.ratio(stages[i + 1][1], v))}</b> move to next stage</div>` : ''}
       </div>`).join('') +
       `<div class="f-total"><span>Lead → Deal conversion</span><b>${WO.pct(WO.ratio(t.deals, t.leads))}</b></div>`;
@@ -72,6 +72,6 @@ WO.init({
       { label: 'Deals', num: true, render: r => WO.num(r.deals) },
       { label: 'Close Rate', num: true, render: r => WO.pct(WO.ratio(r.deals, r.showed)) },
       { label: 'Revenue', num: true, render: r => `<div class="share"><div class="share-bar"><i style="width:${WO.ratio(r.revenue, total) * 100}%"></i></div><b>${WO.money(r.revenue)}</b></div>` }
-    ], rows, { rowClass: r => (ctx.client && r.client.id === ctx.client.id ? 'hl' : '') });
+    ], rows, { rowClass: r => (ctx.client && r.client.id === ctx.client.id ? 'hl' : ''), empty: 'No clients yet. Use <b>Add data</b> to add your first client.' });
   }
 });

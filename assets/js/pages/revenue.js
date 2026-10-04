@@ -14,7 +14,7 @@ WO.init({
       { label: 'Total Revenue', icon: 'dollar', value: WO.money(t.revenue, { compact: true }), delta: WO.delta(t.revenue, p.revenue), spark: s.map(x => x.revenue), accent: true },
       { label: 'Avg. Monthly Revenue', icon: 'layers', value: WO.money(avgMonth, { compact: true }), delta: WO.delta(avgMonth, p.revenue ? p.revenue / n : null), spark: s.map(x => x.revenue) },
       { label: 'Revenue per Lead', icon: 'users', value: WO.money(revPerLead), delta: WO.delta(revPerLead, p.leads ? WO.ratio(p.revenue, p.leads) : null), spark: s.map(x => WO.ratio(x.revenue, x.leads)) },
-      { label: 'Growth in Period', icon: 'trend', value: n > 1 ? (last >= first ? '+' : '') + WO.pct(WO.delta(last, first) || 0) : '—', sub: n > 1 ? `${WO.monthLabel(ctx.months[0])} → ${WO.monthLabel(ctx.months[n - 1])}` : 'Needs 2+ months' }
+      { label: 'Growth in Period', icon: 'trend', value: first ? (last >= first ? '+' : '') + WO.pct(WO.delta(last, first)) : '—', sub: first ? `${WO.monthLabel(ctx.months[0])} → ${WO.monthLabel(ctx.months[n - 1])}` : 'Needs revenue in the first month' }
     ]);
 
     let run = 0;

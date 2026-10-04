@@ -76,6 +76,34 @@
       : '<p class="form-note">No clients yet.</p>';
 
     if (!bound) bind();
+    loadAccess();
+  }
+
+  /* ---------- Access (Supabase only) ---------- */
+  async function loadAccess() {
+    if (!WO.backend.enabled) return;
+    $('accessCard').hidden = false;
+    const { clients } = WO.getData();
+    const prev = $('aClient').value;
+    $('aClient').innerHTML = clients.length
+      ? clients.map(c => `<option value="${WO.esc(c.id)}">${WO.esc(c.name)}</option>`).join('')
+      : '<option value="">Add a client first</option>';
+    if (clients.some(c => c.id === prev)) $('aClient').value = prev;
+
+    let rows;
+    try { rows = await WO.backend.listAccess(); }
+    catch (err) { $('accessList').innerHTML = `<p class="form-note warn">${WO.esc(err.message || err)}</p>`; return; }
+    const session = await WO.backend.getSession();
+    const me = session && session.user.id;
+    const fmtDate = d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    WO.table('#accessList', [
+      { label: 'Login', render: r => WO.esc(r.email) + (r.user_id === me ? ' <span class="muted">(you)</span>' : '') },
+      { label: 'Role', render: r => (r.role === 'team' ? '<span class="role-pill team">Team member</span>'
+        : r.role === 'client' ? `<span class="role-pill">Client · ${WO.esc(r.client_name || '')}</span>`
+        : '<span class="role-pill none">No access</span>') },
+      { label: 'Last sign-in', render: r => (r.last_sign_in_at ? fmtDate(r.last_sign_in_at) : '<span class="muted">Never</span>') },
+      { label: '', num: true, render: r => (r.role && r.user_id !== me ? `<button class="btn btn-sm btn-danger" data-revoke="${WO.esc(r.email)}">Remove access</button>` : '') }
+    ], rows, { empty: 'No logins yet' });
   }
 
   // Runs a change against Supabase (when connected) or browser storage, then re-renders.
@@ -94,6 +122,31 @@
 
   function bind() {
     bound = true;
+
+    const syncRole = () => { $('aClientField').hidden = $('aRole').value !== 'client'; };
+    syncRole();
+    $('aRole').addEventListener('change', syncRole);
+    $('accessForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = $('aEmail').value.trim(), role = $('aRole').value;
+      const clientId = role === 'client' ? $('aClient').value : null;
+      if (role === 'client' && !clientId) { WO.toast('Add a client first'); return; }
+      try {
+        await WO.backend.setAccess(email, role, clientId);
+        WO.toast(`Access saved for ${email}`);
+        $('aEmail').value = '';
+        loadAccess();
+      } catch (err) { WO.toast(err.message || String(err)); }
+    });
+    $('accessList').addEventListener('click', async e => {
+      const b = e.target.closest('[data-revoke]');
+      if (!b || !confirm(`Remove all dashboard access for ${b.dataset.revoke}? They can still sign in but will see no data.`)) return;
+      try {
+        await WO.backend.setAccess(b.dataset.revoke, null, null);
+        WO.toast('Access removed');
+        loadAccess();
+      } catch (err) { WO.toast(err.message || String(err)); }
+    });
 
     $('entryForm').addEventListener('submit', async e => {
       e.preventDefault();
@@ -196,6 +249,8 @@
 
   WO.init({
     page: 'data',
+    teamOnly: true,
+    addButton: false,
     title: 'Data Entry',
     subtitle: 'Log monthly numbers for each client. Every dashboard updates instantly',
     filters: false,

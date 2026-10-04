@@ -76,6 +76,24 @@
           </div>
         </section>
 
+        <section class="card" id="accessCard" hidden>
+          <div class="card-head">
+            <div><h3>Access</h3><p>Team members see every client and can add data. Client logins see only their own company, read-only.</p></div>
+          </div>
+          <form id="accessForm" class="form-grid access-form" autocomplete="off">
+            <div class="field"><label for="aEmail">Login email</label><input class="input" type="email" id="aEmail" placeholder="name@company.com" required></div>
+            <div class="field"><label for="aRole">Role</label>
+              <select class="select input" id="aRole">
+                <option value="client">Client (read-only, own company)</option>
+                <option value="team">Team member (full access)</option>
+              </select></div>
+            <div class="field" id="aClientField"><label for="aClient">Client company</label><select class="select input" id="aClient"></select></div>
+            <div class="field access-submit"><label>&nbsp;</label><button type="submit" class="btn btn-primary">Give access</button></div>
+          </form>
+          <p class="form-note" style="margin:12px 0 18px">The login must exist first: create it in Supabase → Authentication → Users → Add user, then give it a role here.</p>
+          <div id="accessList"></div>
+        </section>
+
       </main>
     </div>
   </div>
